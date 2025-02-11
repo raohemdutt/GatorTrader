@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>GatorTrader - Listings</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+
+        .listings-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+
+        .filter-box {
+            width: 20%;
+            background-color: #002366;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            border-right: 3px solid white;
+        }
+
+        .filter-box h2 {
+            text-align: center;
+            border-bottom: 2px solid white;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-box input,
+        .filter-box select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid white;
+            background: white;
+            color: black;
+        }
+
+        .filter-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #FFCC00;
+            color: black;
+            font-weight: bold;
+            border: 2px solid black;
+        }
+
+
+        .listings-area {
+            width: 80%;
+            padding: 20px;
+            background-color: #f5f5dc;
+        }
+
+        .listings-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: black;
+            border-bottom: 3px solid black;
+            padding-bottom: 10px;
+        }
+
+        .listing {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid black;
+            border-radius: 8px;
+        }
+
+        .listing img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .listing-info h3 {
+            margin: 0;
+            color: black;
+        }
+
+        .listing-info p {
+            margin: 5px 0;
+            color: black;
+        }
+
+        .message-btn {
+            background-color: #FF6600;
+            color: white;
+            padding: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .message-btn:hover {
+            background-color: #cc5200;
+        }
+    </style>
+</head>
+
+<body class="is-preload">
+
+    <header id="header" class="wrapper gators-theme">
+        <a href="firstpage.html">
+            <img src="Gator Trader.png" alt="Gator Trader Logo" class="logo">
+        </a>
+        <h2 style="font-size: 1.5rem; font-weight: lighter; opacity: 0.8; color: white;">
+            Connecting Gators for Seamless Trading!
+        </h2>
+        <div class="right-button">
+            <a href="chat.html" class="button scrolly">Chats</a>
+        </div>
+    </header>
+
+    <div class="listings-container">
+        <aside class="filter-box">
+            <h2>Filters</h2>
+            
+            <input type="text" id="searchBar" placeholder="Search listings...">
+            
+            <label for="category">Category:</label>
+            <select id="category">
+                <option value="all">All</option>
+                <option value="electronics">Electronics</option>
+                <option value="books">Books</option>
+                <option value="clothing">Clothing</option>
+                <option value="furniture">Furniture</option>
+            </select>
+
+
+            <label for="price">Price Range:</label>
+            <input type="number" id="minPrice" placeholder="Min ($)">
+            <input type="number" id="maxPrice" placeholder="Max ($)">
+
+            <label for="condition">Condition:</label>
+            <select id="condition">
+                <option value="all">All</option>
+                <option value="new">New</option>
+                <option value="used">Used</option>
+            </select>
+
+            <button id="applyFilters" style="background-color: white;">Apply Filters</button>
+        </aside>
+
+        <main class="listings-area">
+            <h2 class="listings-title">Available Listings</h2>
+            <div id="listings">
+
+                <div class="listing">
+                    <img src="dog.jpg" alt="Item Image">
+                    <div class="listing-info">
+                        <h3>Dog</h3>
+                        <p>Price: $10</p>
+                        <p>Condition: Like New</p>
+                        <p class="description">dog.</p>
+                        <button class="message-btn" onclick="window.location.href='chat.html?item=dog'">Message Seller</button>
+                    </div>
+                </div>
+
+                <div class="listing">
+                    <img src="cat.jpg" alt="Item Image">
+                    <div class="listing-info">
+                        <h3>Cat</h3>
+                        <p>Price: $50</p>
+                        <p>Condition: Used</p>
+                        <p class="description">cat.</p>
+                        <button class="message-btn" onclick="window.location.href='chat.html?item=cat'">Message Seller</button>
+                    </div>
+                </div>
+
+                <div class="listing">
+                    <img src="headphones.jpg" alt="Item Image">
+                    <div class="listing-info">
+                        <h3>placeholder</h3>
+                        <p>Price: $10</p>
+                        <p>Condition: New</p>
+                        <p class="description">placeholder.</p>
+                        <button class="message-btn" onclick="window.location.href='chat.html?item=headphones'">Message Seller</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="gators-footer">
+        <ul class="menu">
+            <li>Design Template: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>

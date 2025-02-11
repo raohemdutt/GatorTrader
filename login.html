@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>GatorTrader - Log In</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+
+<body class="is-preload">
+
+
+    <header id="header" class="wrapper gators-theme">
+        <a href="firstpage.html">
+            <img src="Gator Trader.png" alt="Gator Trader Logo" class="logo">
+        </a>
+        <h2 style="font-size: 1.5rem; font-weight: lighter; opacity: 0.8;">
+            Connecting Gators for Seamless Trading!
+        </h2>
+    </header>
+
+
+    <section id="login" class="wrapper fullscreen">
+        <div class="login-container">
+            <h1>Log In</h1>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+    
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+    
+                <button type="submit" class="button log-in-button">Log In</button>
+            </form>
+            <p id="error-message" style="color: red;"></p>
+        </div>
+    </section>
+
+    <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); 
+
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let errorMessage = document.getElementById("error-message");
+
+        if (username.trim() === "" || password.trim() === "") {
+            errorMessage.textContent = "Please enter both username and password!";
+        } else {
+            errorMessage.textContent = ""; 
+            alert("Login successful! Redirecting to home page.");
+            window.location.href = "firstpage.html"; 
+        }
+    });
+    </script>
+
+
+    <footer class="gators-footer">
+        <ul class="menu">
+            <li>Design Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>

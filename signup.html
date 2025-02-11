@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>GatorTrader - Sign Up</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+
+<body class="is-preload">
+
+
+    <header id="header" class="wrapper gators-theme">
+        <a href="firstpage.html">
+            <img src="Gator Trader.png" alt="Gator Trader Logo" class="logo">
+        </a>
+        <h2 style="font-size: 1.5rem; font-weight: lighter; opacity: 0.8;">
+            Connecting Gators for Seamless Trading!
+        </h2>
+        <div class="right-button">
+            <a href="login.html" class="button scrolly">Log In</a>
+        </div>
+    </header>
+
+    <section id="signup" class="wrapper fullscreen">
+        <div class="signup-container">
+            <h1>Sign Up</h1>
+            <p>Create an account to start trading!</p>
+            <form id="signupForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+    
+                <label for="ufemail">UF Email:</label>
+                <input type="email" id="ufemail" name="ufemail" placeholder="yourname@ufl.edu" required>
+    
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+    
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+    
+                <button type="submit" class="button sign-up-button">Sign Up</button>
+            </form>
+            <p id="error-message" style="color: red;"></p>
+        </div>
+    </section>
+    
+    <script>
+    document.getElementById("signupForm").addEventListener("submit", function(event) {
+        event.preventDefault(); 
+    
+
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirm_password").value;
+        let errorMessage = document.getElementById("error-message");
+    
+        if (password !== confirmPassword) {
+            errorMessage.textContent = "Passwords do not match!";
+        } else {
+            errorMessage.textContent = ""; 
+            alert("Sign-up successful! Redirecting to home page.");
+            window.location.href = "firstpage.html"; 
+        }
+    });
+    </script>
+    
+
+    <footer class="gators-footer">
+        <ul class="menu">
+            <li>Design Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+    </footer>
+
+
+    <script src="assets/js/signup.js"></script>
+
+</body>
+</html>
