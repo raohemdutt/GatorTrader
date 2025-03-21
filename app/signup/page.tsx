@@ -37,18 +37,18 @@ export default function SignUp() {
         
     try {
     
-      const { data: existingUsers, error: fetchError } = await supabase
-        .from("registered_users")
-        .select("email")
-        .eq("email", email);
+      // const { data: existingUsers, error: fetchError } = await supabase
+      //   .from("registered_users")
+      //   .select("email")
+      //   .eq("email", email);
 
-      if (fetchError) throw fetchError;
+      // if (fetchError) throw fetchError;
 
-      if (existingUsers && existingUsers.length > 0) {
-        setMessage("This email is already registered. Please log in instead.");
-        setLoading(false);
-        return;
-      }
+      // if (existingUsers && existingUsers.length > 0) {
+      //   setMessage("This email is already registered. Please log in instead.");
+      //   setLoading(false);
+      //   return;
+      // }
 
       // Step 1: Sign up user with Supabase Auth (No username field)
       const { data, error } = await supabase.auth.signUp({

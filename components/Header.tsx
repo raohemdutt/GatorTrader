@@ -42,7 +42,7 @@ export function Header() {
     <header className="w-full bg-primary text-white p-4">
       <div className="container mx-auto flex items-center justify-between">
         {/*  Logo */}
-        <Link href="/about" className="flex items-center space-x-2">
+        <Link href="/login" className="flex items-center space-x-2">
           <Image
             src="/icons/Gator Trader.png"
             alt="GatorTrader Icon"
@@ -62,8 +62,8 @@ export function Header() {
             <>
               <NavLink href={`/dashboard/${userId}`}>Dashboard</NavLink>
               <NavLink href="/messaging">Messages</NavLink>
-              <NavLink href="/products">Products</NavLink>
-              <NavLink href="/transactions">Transactions</NavLink>
+              <NavLink href="/my_products"> My Listings</NavLink>
+              <NavLink href={`/transactions/${userId}`}> Transactions</NavLink>
               <NavLink href={`/profile/${userId}`}>Profile</NavLink>
 
               {/*  More Dropdown */}
@@ -75,7 +75,7 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white text-black w-40 mt-2">
                   <DropdownMenuItem asChild>
-                    <Link href="/about" className="block px-4 py-2 hover:bg-gray-100">About</Link>
+                    {/* <Link href="/about" className="block px-4 py-2 hover:bg-gray-100">About</Link> */}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/contact" className="block px-4 py-2 hover:bg-gray-100">Contact</Link>

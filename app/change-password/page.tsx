@@ -39,7 +39,7 @@ export default function ChangePassword() {
 
       setMessage("Password updated successfully! Redirecting...");
       setTimeout(() => {
-        router.push("/dashboard"); // Redirect to dashboard after success
+        router.push("/login"); // Redirect to dashboard after success
       }, 2000);
     } catch (error: any) {
       setMessage(error.message);

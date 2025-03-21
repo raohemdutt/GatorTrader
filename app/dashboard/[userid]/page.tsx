@@ -4,18 +4,37 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast, Toaster } from "react-hot-toast"
+import { ArrowLeft, Plus, Pencil, Trash2, DollarSign, CheckCircle } from "lucide-react"
+
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface Product {
   id: number;
   title: string;
+  description: string;
   price: number;
   category: string;
   created_at: string;
   image_url: string;
+  seller_id: string;
+  seller_username?: string; // To store the username of the seller
 }
 
 export default function Dashboard() {
@@ -25,9 +44,11 @@ export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [sortBy, setSortBy] = useState("newest");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   // ✅ Fetch logged-in user data
   useEffect(() => {
@@ -49,33 +70,68 @@ export default function Dashboard() {
     }
   }, [userId]);
 
-  // ✅ Filter products based on search/category/sort
-  useEffect(() => {
-    filterProducts();
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
+  // ✅ Fetch products from Supabase
   async function fetchProducts() {
-    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+    if (!userId) {
+      setMessage("Error: No user ID found in URL.");
+      return;
+    }
 
-    if (error) {
-      console.error("Error fetching products:", error);
-    } else {
-      setProducts(data || []);
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select() // Explicit join
+        .eq("status", "active") // ✅ Fetch only active products
+
+
+    
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        console.log("No products found in the database.");
+        setMessage("No products found.");
+        return;
+      }
+
+      console.log("Fetched Active Products:", data);
+      setProducts(data); // Set the state with fetched products
+
+    } catch (error: any) {
+      console.error("Unexpected error:", error);
+      setMessage("Unexpected error occurred.");
     }
   }
+      
 
+    // ✅ Filter products based on search/category/sort
+    useEffect(() => {
+      filterProducts();
+    }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
+  
   function filterProducts() {
     const filtered = products.filter((product) => {
-      const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === "" || product.category === selectedCategory || selectedCategory === "all";
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      const matchesSearch = product.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "" ||
+        product.category === selectedCategory ||
+        selectedCategory === "all";
+      const matchesPrice =
+        product.price >= priceRange[0] && product.price <= priceRange[1];
       return matchesSearch && matchesCategory && matchesPrice;
     });
 
     if (sortBy === "newest") {
-      filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      filtered.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     } else if (sortBy === "oldest") {
-      filtered.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      filtered.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
     } else if (sortBy === "price_low_high") {
       filtered.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price_high_low") {
@@ -87,7 +143,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-center">Welcome to Gator Marketplace</h1>
+      <h1 className="text-3xl font-bold text-center">
+        Welcome to Gator Marketplace
+      </h1>
 
       {/* ✅ Navigation for logged-in user */}
       {userId && (
@@ -119,11 +177,11 @@ export default function Dashboard() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="books">Books</SelectItem>
-            <SelectItem value="electronics">Electronics</SelectItem>
-            <SelectItem value="furniture">Furniture</SelectItem>
-            <SelectItem value="clothing">Clothing</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            <SelectItem value="Books">Books</SelectItem>
+            <SelectItem value="Electronics">Electronics</SelectItem>
+            <SelectItem value="Furniture">Furniture</SelectItem>
+            <SelectItem value="Clothing">Clothing</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
           </SelectContent>
         </Select>
         <Select value={sortBy} onValueChange={setSortBy}>
@@ -143,13 +201,28 @@ export default function Dashboard() {
         <label className="text-sm font-medium">
           Price Range: ${priceRange[0]} - ${priceRange[1]}
         </label>
-        <Slider min={0} max={1000} step={10} value={priceRange} onValueChange={setPriceRange} />
+        <Slider
+          min={0}
+          max={10000}
+          step={10}
+          value={priceRange}
+          onValueChange={setPriceRange}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+      <Toaster position="top-right" />
+      <div className="flex justify-between items-left mb-6">
+        <Button onClick={() => router.push("/add_listing")} className="flex items-center">
+          <Plus className="mr-2 h-4 w-4" /> List New Product
+        </Button>
+      </div>
       </div>
 
       {/* ✅ Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
-          <Link href={`/product/${product.id}`} key={product.id}>
+          <Link href={`/dashboard/${userId}/product/${product.id}`} key={product.id}>
             <Card className="h-full hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>{product.title}</CardTitle>
@@ -160,11 +233,15 @@ export default function Dashboard() {
                   alt={product.title}
                   className="w-full h-48 object-cover mb-4 rounded"
                 />
-                <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
+                <p className="text-2xl font-bold">
+                  ${product.price.toFixed(2)}
+                </p>
                 <p className="text-sm text-gray-500">{product.category}</p>
               </CardContent>
               <CardFooter>
-                <p className="text-sm text-gray-500">Listed on {new Date(product.created_at).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-500">
+                  Listed on {new Date(product.created_at).toLocaleDateString()}
+                </p>
               </CardFooter>
             </Card>
           </Link>
@@ -172,8 +249,12 @@ export default function Dashboard() {
       </div>
 
       {filteredProducts.length === 0 && (
-        <p className="text-center text-gray-500">No products found matching your criteria.</p>
+        <p className="text-center text-gray-500">
+          No products found matching your criteria.
+        </p>
       )}
+
+
     </div>
   );
 }
