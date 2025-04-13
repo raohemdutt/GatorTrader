@@ -7,6 +7,14 @@ function Chat() {
   const [talkSession, setTalkSession] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
+// Define an array of 10 image URLs
+const images = [
+  "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Ffree-photos-vectors%2Fprofile-avatar&psig=AOvVaw2GWdy7lbm1JJBte2LT3MaR&ust=1743540557336000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCODkk_GYtYwDFQAAAAAdAAAAABAE",
+  "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpngtree.com%2Fso%2Fuser-avatar&psig=AOvVaw2GWdy7lbm1JJBte2LT3MaR&ust=1743540557336000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCODkk_GYtYwDFQAAAAAdAAAAABAI",
+  "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpngtree.com%2Ffree-png-vectors%2Fuser-avatar&psig=AOvVaw2GWdy7lbm1JJBte2LT3MaR&ust=1743540557336000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCODkk_GYtYwDFQAAAAAdAAAAABAP",
+  "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fsearch%3Fq%3Dman%2Bavatar&psig=AOvVaw2GWdy7lbm1JJBte2LT3MaR&ust=1743540557336000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCODkk_GYtYwDFQAAAAAdAAAAABAW"
+];
+
   useEffect(() => {
     if(!window.Talk) {
       console.error('TalkJS script not loaded yet.');
@@ -39,21 +47,31 @@ function Chat() {
   }, []);
 
   const startChat = () => {
+    // Check if email is provided
     if (!email) {
       alert("Please enter an email address");
       return;
     }
+
+    // Validate email: must be a valid @ufl.edu email (case insensitive)
+    if (!email.toLowerCase().endsWith('@ufl.edu')) {
+      alert("Please enter a valid @ufl.edu email address");
+      return;
+    }
+
     if (!talkSession || !currentUser) {
       alert("Chat is not ready yet. Please try again later.");
       return;
     }
 
+    //Radomly select a photo from the images array
+    const randomPhoto = images[Math.floor(Math.random() * images.length)];
     // Create a dummy user based on the entered email
     const otherUser = new window.Talk.User({
       id: email, // In production, use a unique user id from your database
       name: email.split("@")[0],
       email: email,
-      photoUrl: "https://via.placeholder.com/150", // Placeholder image
+      photoUrl: randomPhoto, // Use the randomly selected photo URL
       welcomeMessage: "Hi there! Let's chat."
     });
 
@@ -64,16 +82,22 @@ function Chat() {
     conversation.setParticipant(otherUser);
 
     // Create and mount the inbox UI for the selected conversation
-    const inbox = talkSession.createInbox({selected: conversation });
+    const inbox = talkSession.createInbox({ selected: conversation });
     inbox.mount(chatContainerRef.current);
   };
 
   return (
-    <div>
+    <div 
+      style={{
+        background: 'linear-gradient(45deg, #0021A5, #FA4616, #0021A5)',
+        minHeight: '100vh',
+        padding: '20px'
+      }}
+    >
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         <input
           type="text"
-          placeholder="Enter user email"
+          placeholder="Enter target user's email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={{ padding: '8px', width: '200px', marginRight: '10px' }}
@@ -84,7 +108,13 @@ function Chat() {
       </div>
       <div
         ref={chatContainerRef}
-        style={{ width: '90%', height: '500px', margin: '30px auto', border: '1px solid #ccc' }}
+        style={{
+          width: '90%',
+          height: '500px',
+          margin: '30px auto',
+          border: '1px solid #ccc',
+          backgroundColor: '#fff'
+        }}
       >
         Loading chat...
       </div>

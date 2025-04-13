@@ -1,60 +1,70 @@
-# GatorTrader
----
+# Getting Started with Create React App
 
-## **GatorTrader is a web application designed exclusively for UF students to facilitate seamless buying and selling of items.**  
-The platform integrates **user authentication**, **product listing**, **real-time chat**, and an **AI chatbot** for smart pricing recommendations.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
----
+## Available Scripts
 
-## 🚀 **Project Vision**
-GatorTrader aims to create a secure, user-friendly marketplace for UF students to trade items efficiently. Our focus is on reliability, ease of use, and smart AI-driven assistance.
+In the project directory, you can run:
 
----
+### `npm start`
 
-## 🏗️ **Tech Stack**
-- **Frontend:** React, HTML/CSS, JavaScript
-- **Backend:** Python
-- **Database:** Supabase
-- **Real-time Chat:** Talk.js
-- **AI Integration:** OpenAI API
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
----
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-## 👥 **Team Roles**
-- **Front End & Project Manager:** Blake Coppens
-- **Back End:** Jayce Corcoran
-- **Databases & Scrum Master:** Hemdutt Rao
+### `npm test`
 
----
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## 💡 **Key Features**
-- Secure **User Authentication** using Supabase
-- Dynamic **Product Listings**
-- **Real-time Chat** with Talk.js
-- Integrated **AI Chatbot** for pricing suggestions
+### `npm run build`
 
----
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-## 🔐 **Branch Protection Rules**
-To maintain code integrity and ensure smooth collaboration, the following **branch protection rules** are enforced on the `main` branch:
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-1. **Require Pull Request Reviews:** All code changes must go through a pull request with at least **one approval** before merging.
-2. **Require Status Checks to Pass:** Automated tests via GitHub Actions must pass before merging.
-3. **Disable Force Pushes:** Direct pushes to `main` are disabled to prevent accidental overwrites.
-4. **Prevent Branch Deletion:** The `main` branch cannot be deleted.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
----
+### `npm run eject`
 
-## 📦 **Contributing**
-We welcome contributions from the UF developer community! Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
----
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-## ⚠️ **Risk Management**
-- **Authentication Risks:** Mitigated using multi-factor authentication.
-- **Database Failure:** Managed with regular backups and distributed systems.
-- **API Integration Issues:** Addressed by choosing standardized APIs.
-- **Data Protection:** Focus on encryption and minimal data storage.
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
----
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
