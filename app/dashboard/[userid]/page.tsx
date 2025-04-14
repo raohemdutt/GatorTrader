@@ -212,11 +212,11 @@ export default function Dashboard() {
 
       <div className="container mx-auto px-4 py-8">
       <Toaster position="top-right" />
-      <div className="flex justify-between items-left mb-6">
+      {/* <div className="flex justify-between items-left mb-6">
         <Button onClick={() => router.push("/add_listing")} className="flex items-center">
           <Plus className="mr-2 h-4 w-4" /> List New Product
         </Button>
-      </div>
+      </div> */}
       </div>
 
       {/* ✅ Products Grid */}

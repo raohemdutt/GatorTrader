@@ -1,5 +1,11 @@
 "use client";
 
+declare global {
+  interface Window {
+    Talk: any;
+  }
+}
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -10,22 +16,10 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  created_at: string;
-  image_url: string;
-  seller_id: string;
-  seller_username?: string;
-}
-
 export default function ProductDetails() {
   const router = useRouter();
   const { productId } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [buyerUsername, setBuyerUsername] = useState("");
   const [finalPrice, setFinalPrice] = useState("");
@@ -66,43 +60,85 @@ export default function ProductDetails() {
     try {
       const { data: buyerData, error: buyerError } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, email, username, profile_picture")
         .eq("username", buyerUsername.trim())
         .single();
 
       if (buyerError || !buyerData) {
-        toast.error(`Buyer with username "${buyerUsername}" not found.`);
+        toast.error(`Buyer "${buyerUsername}" not found.`);
         return;
       }
 
       const buyerId = buyerData.id;
+      const buyerEmail = buyerData.email;
       const sellerId = product?.seller_id;
 
       if (!product || !sellerId) return;
 
-      // Insert transaction
+      // 1. Insert transaction with 'pending' status
       const { error: transactionError } = await supabase.from("transactions").insert([
         {
           product_id: product.id,
           buyer_id: buyerId,
           seller_id: sellerId,
           total_price: Number.parseFloat(finalPrice),
+          status: "pending",
         },
       ]);
 
-      if (transactionError) throw transactionError;
-
-      // Remove product
-      const { error: updateError } = await supabase
-      .from("products")
-      .update({ status: "sold", updated_at: new Date().toISOString() })
-      .eq("id", product.id);
-    
-      if (updateError) {
-        throw updateError;
+      if (transactionError) {
+        toast.error("This product has already been marked as sold.");
+        throw transactionError;
       }
-    
-      toast.success("Product sold and recorded successfully!");
+
+      // 2. Update product status
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({ status: "pending", updated_at: new Date().toISOString() })
+        .eq("id", product.id);
+
+      if (updateError) throw updateError;
+
+      // 3. Send TalkJS system message
+      if (typeof window !== "undefined" && window.Talk) {
+        await window.Talk.ready;
+
+        const currentUser = await supabase.auth.getUser();
+
+        const seller = new window.Talk.User({
+          id: sellerId,
+          name: product.seller_username || "Seller",
+          email: currentUser?.data?.user?.email || "",
+          photoUrl: product.image_url || undefined,
+          welcomeMessage: "Seller marked item as sold.",
+        });
+
+        const buyer = new window.Talk.User({
+          id: buyerId,
+          name: buyerData.username,
+          email: buyerEmail,
+          photoUrl: buyerData.profile_picture || undefined,
+          welcomeMessage: "You've received a message.",
+        });
+
+        const session = new window.Talk.Session({
+          appId: "tu3aoShQ",
+          me: seller,
+        });
+
+        const conversationId = window.Talk.oneOnOneId(seller, buyer);
+        const conversation = session.getOrCreateConversation(conversationId);
+        conversation.setParticipant(seller);
+        conversation.setParticipant(buyer);
+
+        conversation.sendMessage(
+          `The seller has marked "${product.title}" as sold to you for $${Number.parseFloat(finalPrice).toFixed(2)}. Please confirm to finalize.`
+        );
+        
+        session.destroy();
+      }
+
+      toast.success("Product marked as sold. Buyer notified.");
       router.push("/my_products");
     } catch (error) {
       console.error("Error marking product as sold:", error);
@@ -131,7 +167,6 @@ export default function ProductDetails() {
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to My Products
       </Button>
 
-      {/* Product Image */}
       <div className="flex justify-center">
         <Image
           src={product.image_url || "/placeholder.svg"}
@@ -142,15 +177,15 @@ export default function ProductDetails() {
         />
       </div>
 
-      {/* Product Info */}
       <div className="bg-white p-6 shadow-md rounded-lg space-y-4">
         <p className="text-gray-700">{product.description}</p>
         <p className="text-green-600 text-xl font-bold">${product.price.toFixed(2)}</p>
         <p className="text-sm text-gray-500">Category: {product.category}</p>
-        <p className="text-sm text-gray-500">Listed by: <span className="font-semibold">{product.seller_username}</span></p>
+        <p className="text-sm text-gray-500">
+          Listed by: <span className="font-semibold">{product.seller_username}</span>
+        </p>
       </div>
 
-      {/* Buyer and Price */}
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="buyerUsername">Buyer Username</Label>
@@ -176,7 +211,6 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      {/* Action Button */}
       <div className="flex justify-center pt-4">
         <Button
           type="button"

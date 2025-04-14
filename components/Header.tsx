@@ -42,7 +42,7 @@ export function Header() {
     <header className="w-full bg-primary text-white p-4">
       <div className="container mx-auto flex items-center justify-between">
         {/*  Logo */}
-        <Link href="/login" className="flex items-center space-x-2">
+        <Link href="/about" className="flex items-center space-x-2">
           <Image
             src="/icons/Gator Trader.png"
             alt="GatorTrader Icon"
@@ -61,7 +61,7 @@ export function Header() {
           {userId ? (
             <>
               <NavLink href={`/dashboard/${userId}`}>Dashboard</NavLink>
-              <NavLink href="/messaging">Messages</NavLink>
+              <NavLink href="/messages">Messages</NavLink>
               <NavLink href="/my_products"> My Listings</NavLink>
               <NavLink href={`/transactions/${userId}`}> Transactions</NavLink>
               <NavLink href={`/profile/${userId}`}>Profile</NavLink>
@@ -88,7 +88,7 @@ export function Header() {
             </>
           ) : (
             <>
-              <NavLink href="/about">About</NavLink>
+              <NavLink href="/login">Login</NavLink>
               <NavLink href="/contact">Contact</NavLink>
               {/* <NavLink href="/login">Login</NavLink>
               <NavLink href="/signup">Sign Up</NavLink> */}

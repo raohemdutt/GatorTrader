@@ -101,12 +101,32 @@ export default function ProfilePage() {
   // Handle Username Update
   async function handleSaveChanges() {
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ username })
-        .eq("id", userId);
+    // 1. Check if username is already taken (by someone else)
+    const { data: existingUser, error: fetchError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .neq("id", userId) // exclude current user
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") {
+      throw fetchError; // Allow no rows found, but error on anything else
+    }
+
+    if (existingUser) {
+      setMessage("Username is already taken.");
+      return;
+    }
+
+    // 2. If unique, update the profile
+    const { error } = await supabase
+      .from("profiles")
+      .update({ username })
+      .eq("id", userId);
+  
 
       if (error) throw error;
+
       setMessage("Profile updated successfully!");
       setIsEditing(false); // Exit edit mode
       fetchProfile(); // Refresh profile data
@@ -130,6 +150,20 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-md mx-auto space-y-6 p-6">
+  <div className="absolute top-32 right-12 z-10">
+        <button
+          onClick={() => {
+            setMessage(
+              "Due to security reasons, you cannot currently delete your account. Please contact support to delete your account completely."
+            );
+            setTimeout(() => setMessage(""), 5000);
+          }}
+          className="text-sm text-gray-600 hover:text-red-600 transition-colors duration-200"
+        >
+          Delete Profile
+        </button>
+      </div>
+
       <h1 className="text-3xl font-bold text-center">Profile</h1>
 
       {profile ? (
@@ -181,7 +215,7 @@ export default function ProfilePage() {
             <Button onClick={handleResetPassword} className="bg-red-500 hover:bg-red-600">
               Reset Password
             </Button>
-          </div>
+                      </div>
 
           {message && <p className="text-center text-sm mt-2 text-red-500">{message}</p>}
         </>

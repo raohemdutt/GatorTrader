@@ -213,11 +213,11 @@ export default function EditProduct() {
             <Select value={category} onValueChange={setCategory} required>
               <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="books">Books</SelectItem>
-                <SelectItem value="electronics">Electronics</SelectItem>
-                <SelectItem value="furniture">Furniture</SelectItem>
-                <SelectItem value="clothing">Clothing</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="Books">Books</SelectItem>
+                <SelectItem value="Electronics">Electronics</SelectItem>
+                <SelectItem value="Furniture">Furniture</SelectItem>
+                <SelectItem value="Clothing">Clothing</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>

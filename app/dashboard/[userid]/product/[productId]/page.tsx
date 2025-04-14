@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -16,12 +16,12 @@ interface Product {
   image_url: string;
   seller_id: string;
   seller_username?: string;
+  seller_email?: string;
 }
 
 export default function ProductDetails() {
-  const params = useParams();
-  const productId = params?.productId; // Get product ID from URL
-  // const productId = Array.isArray(params?.productId) ? params.productId[0] : params?.productId;
+  const { productId } = useParams();
+  const router = useRouter();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,18 +37,21 @@ export default function ProductDetails() {
 
     const { data, error } = await supabase
       .from("products")
-      .select("*, profiles(username)")
+      .select("*, profiles(username, email)")
       .eq("id", productId)
       .single();
 
-    if (error) {
+    if (error || !data) {
       console.error("Error fetching product:", error);
+      setProduct(null);
     } else {
       setProduct({
         ...data,
         seller_username: data.profiles?.username || "Unknown",
+        seller_email: data.profiles?.email || "", // capture the email explicitly
       });
     }
+
     setLoading(false);
   }
 
@@ -80,9 +83,18 @@ export default function ProductDetails() {
         </p>
       </div>
 
-      {/* Message Seller Button (Currently Empty) */}
+      {/* Message Seller Button */}
       <div className="flex justify-center">
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3">
+        <Button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3"
+          onClick={() => {
+            if (product.seller_email) {
+              router.push(`/messages?sellerEmail=${encodeURIComponent(product.seller_email)}`);
+            } else {
+              alert("Seller email not available.");
+            }
+          }}
+        >
           Message Seller
         </Button>
       </div>
