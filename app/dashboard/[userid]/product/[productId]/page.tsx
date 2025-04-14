@@ -56,7 +56,8 @@ export default function ProductDetails() {
   }
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
-  if (!product) return <p className="text-center text-gray-500">Product not found.</p>;
+  if (!product)
+    return <p className="text-center text-gray-500">Product not found.</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -76,20 +77,27 @@ export default function ProductDetails() {
       {/* Product Details */}
       <div className="bg-white p-6 shadow-lg rounded-lg space-y-4">
         <p className="text-lg text-gray-700">{product.description}</p>
-        <p className="text-2xl font-bold text-green-600">${product.price.toFixed(2)}</p>
+        <p className="text-2xl font-bold text-green-600">
+          ${product.price.toFixed(2)}
+        </p>
         <p className="text-sm text-gray-500">Category: {product.category}</p>
         <p className="text-sm text-gray-500">
-          Listed by: <span className="font-semibold">{product.seller_username}</span>
+          Listed by:{" "}
+          <span className="font-semibold">{product.seller_username}</span>
         </p>
       </div>
 
       {/* Message Seller Button */}
       <div className="flex justify-center">
         <Button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3"
+          className="grid grid-cols-1"
           onClick={() => {
             if (product.seller_email) {
-              router.push(`/messages?sellerEmail=${encodeURIComponent(product.seller_email)}`);
+              router.push(
+                `/messages?sellerEmail=${encodeURIComponent(
+                  product.seller_email
+                )}`
+              );
             } else {
               alert("Seller email not available.");
             }

@@ -52,7 +52,9 @@ export default function ProfilePage() {
   }
 
   // Handle Profile Picture Upload
-  async function handleProfilePicUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleProfilePicUpload(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -63,24 +65,24 @@ export default function ProfilePage() {
       const filePath = `profile_pictures/${fileName}`;
 
       console.log("Uploading file:", fileName);
-  
+
       // Upload the file to Supabase Storage
       const { data, error } = await supabase.storage
         .from("profile_pictures")
         .upload(filePath, file, { upsert: true });
-  
+
       if (error) throw error;
-  
+
       // const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/profile_pictures/${fileName}`;
 
       const { data: publicUrlData } = await supabase.storage
-      .from("profile_pictures")
-      .getPublicUrl(filePath);
+        .from("profile_pictures")
+        .getPublicUrl(filePath);
 
-    let imageUrl = publicUrlData.publicUrl;
+      let imageUrl = publicUrlData.publicUrl;
 
-    console.log("Generated Image URL:", imageUrl);
-    imageUrl = `${imageUrl}?timestamp=${new Date().getTime()}`;
+      console.log("Generated Image URL:", imageUrl);
+      imageUrl = `${imageUrl}?timestamp=${new Date().getTime()}`;
 
       // Update database with new image URL
       const { error: updateError } = await supabase
@@ -101,29 +103,28 @@ export default function ProfilePage() {
   // Handle Username Update
   async function handleSaveChanges() {
     try {
-    // 1. Check if username is already taken (by someone else)
-    const { data: existingUser, error: fetchError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username", username)
-      .neq("id", userId) // exclude current user
-      .single();
+      // 1. Check if username is already taken (by someone else)
+      const { data: existingUser, error: fetchError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", username)
+        .neq("id", userId) // exclude current user
+        .single();
 
-    if (fetchError && fetchError.code !== "PGRST116") {
-      throw fetchError; // Allow no rows found, but error on anything else
-    }
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError; // Allow no rows found, but error on anything else
+      }
 
-    if (existingUser) {
-      setMessage("Username is already taken.");
-      return;
-    }
+      if (existingUser) {
+        setMessage("Username is already taken.");
+        return;
+      }
 
-    // 2. If unique, update the profile
-    const { error } = await supabase
-      .from("profiles")
-      .update({ username })
-      .eq("id", userId);
-  
+      // 2. If unique, update the profile
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username })
+        .eq("id", userId);
 
       if (error) throw error;
 
@@ -131,7 +132,6 @@ export default function ProfilePage() {
       setIsEditing(false); // Exit edit mode
       fetchProfile(); // Refresh profile data
       setTimeout(() => setMessage(""), 2000);
-
     } catch (error: any) {
       setMessage("Error updating profile.");
     }
@@ -140,7 +140,9 @@ export default function ProfilePage() {
   // Handle Password Reset
   async function handleResetPassword() {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(profile.email);
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        profile.email
+      );
       if (error) throw error;
       setMessage("Password reset email sent.");
     } catch (error: any) {
@@ -150,7 +152,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-md mx-auto space-y-6 p-6">
-  <div className="absolute top-32 right-12 z-10">
+      <div className="absolute top-32 right-12 z-10">
         <button
           onClick={() => {
             setMessage(
@@ -204,23 +206,33 @@ export default function ProfilePage() {
           {/* Buttons */}
           <div className="flex justify-between mt-4">
             {isEditing ? (
-              <Button onClick={handleSaveChanges} className="bg-green-500 hover:bg-green-600">
+              <Button onClick={handleSaveChanges} className="grid grid-cols-1">
                 Save
               </Button>
             ) : (
-              <Button onClick={() => setIsEditing(true)} className="bg-blue-500 hover:bg-blue-600">
+              <Button
+                onClick={() => setIsEditing(true)}
+                className="grid grid-cols-1"
+              >
                 Edit
               </Button>
             )}
-            <Button onClick={handleResetPassword} className="bg-red-500 hover:bg-red-600">
+            <Button
+              onClick={handleResetPassword}
+              className="bg-red-500 hover:bg-red-600"
+            >
               Reset Password
             </Button>
-                      </div>
+          </div>
 
-          {message && <p className="text-center text-sm mt-2 text-red-500">{message}</p>}
+          {message && (
+            <p className="text-center text-sm mt-2 text-red-500">{message}</p>
+          )}
         </>
       ) : (
-        <p className="text-center text-sm text-red-500">{message || "Loading profile..."}</p>
+        <p className="text-center text-sm text-red-500">
+          {message || "Loading profile..."}
+        </p>
       )}
     </div>
   );
